@@ -1,4 +1,4 @@
-class Fptr{
+export class Fptr{
     constructor(fileID){
         this.fileID = fileID;
 
@@ -11,7 +11,7 @@ class Fptr{
     }
 }
 
-class Div{
+export class Div{
     constructor(label,dmdid,type,order){
         this.fptrs = [];
         this.divs = [];
@@ -29,6 +29,7 @@ class Div{
           this.properties.set("ORDER",order);
         }
     }
+    
     convertPropertiesToJson(){
       let output = "";
       let counter = 1;
@@ -103,7 +104,7 @@ class Div{
     }
 }
 
-class StructMap {
+export class StructMap {
     constructor(id){
         this.id = id;
         this.divs = [];

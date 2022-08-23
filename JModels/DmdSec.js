@@ -1,4 +1,4 @@
-class XmlData{
+export class XmlData{
     constructor(identifier,title,creator,date,publisher,type,description){
         this.properties = new Map();
         if(identifier != null){
@@ -57,7 +57,7 @@ class XmlData{
     */
 }
 
-class MdWrap{
+export class MdWrap{
 
     constructor(mdtype,xmlData){
         this.mdtype = mdtype;
@@ -72,7 +72,7 @@ class MdWrap{
     }
 }
 
-class DmdSec{
+export class DmdSec{
     constructor(id,groupid,mdType,xmlData){
         this.id = id;
         this.groupid = groupid;

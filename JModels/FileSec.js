@@ -1,4 +1,4 @@
-class File{
+export class File{
 
   /*
     ID and LOCTYPE are required
@@ -11,26 +11,16 @@ class File{
 
   convertToJson(){
     return "{"+
-            "\"@ID\": \""+this.id+"\","+ 
-            "\"Flocat\": {"+
-              "\"@LOCTYPE\": \"URL\","+
-              "\"@xlink:type\": \"simple\","+
-              "\"@xlink:href\": \""+ this.link +"\""+
-           "}"
+              "\"@ID\": \""+this.id+"\","+ 
+              "\"FLocat\": {"+
+                "\"@LOCTYPE\": \"URL\","+
+                "\"@xlink:type\": \"simple\","+
+                "\"@xlink:href\": \""+ this.link +"\""+
+           "}}"
   }
-  /*
-  "file": {
-    "@ID": "f001",
-    "FLocat": {
-      "@LOCTYPE": "URL",
-      "@type": "simple",
-      "@href": "http://dlib.nyu.edu/divlib/bobst/fales/imls_maass/images/maass/jpg/900000_902000/900345s.jpg"
-    }
-  }
-   */
 }
 
-class FileGroup{
+export class FileGroup{
     /*
       USE is required
     */
@@ -65,7 +55,7 @@ class FileGroup{
         }else{
           output += group.convertToJson();
         }
-        if(counter = this.fileGroups.length){
+        if(counter == this.fileGroups.length){
           output +="]";
         }
         counter++;
@@ -78,12 +68,12 @@ class FileGroup{
         if(counter == 1){
           output += "\"file\": [";
         }
-        output += file.convertToJson();
         if(counter < this.files.length){
-          output += ",";
+          output += file.convertToJson() + ",";
+        }else{
+          output += file.convertToJson();
         }
-        output += "}"
-        if(counter = this.files.length){
+        if(counter == this.files.length){
           output +="]";
         }
         counter++;
@@ -93,7 +83,7 @@ class FileGroup{
     }
 }
 
-class FileSec{
+export class FileSec{
   constructor(){
       this.fileGroups = [];
   }
@@ -117,8 +107,7 @@ class FileSec{
 
       counter++;
     });
-    output +="]"
-    output += "}";
+    output +="]}"
     return output;
   }
 }

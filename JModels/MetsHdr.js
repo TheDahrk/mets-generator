@@ -1,4 +1,4 @@
-class Agent{
+export class Agent{
   /*
     ROLE is required and the allowed values are: 
     CREATOR: The person(s) or institution(s) responsible for the METS document. 
@@ -26,10 +26,9 @@ class Agent{
 }
 
 
-class MetsHdr {
+export class MetsHdr {
     constructor(createDate,lastModifiedDate) {
       this.agents = new Array();
-      this.addAgent("CREATOR","METS-FILE CREATORTOOL")
       this.properties = new Map();
         if(createDate != null){
           this.properties.set("CREATEDATE",createDate);
