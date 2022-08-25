@@ -11,12 +11,19 @@ export class Agent{
     OTHER: Use OTHER if none of the preceding values pertains and clarify the type and location specifier being used in the OTHERROLE attribute (see below).
   */
 
-  
+  /**
+   * Represents the mets "Agent" element
+   * @param {string} role The role of the agent
+   * @param {string} name The name of the agent
+   */
   constructor(role,name){
     this.role = role;
     this.name = name;
   }
-
+  /**
+   * Converts the element to a json formated string
+   * @returns {string} Returns the element as a json string
+   */
   convertToJson(){
     return "{" +
               "\"@ROLE\": \"" + this.role+ "\"," +
@@ -27,65 +34,70 @@ export class Agent{
 
 
 export class MetsHdr {
-    constructor(createDate,lastModifiedDate) {
-      this.agents = new Array();
-      this.properties = new Map();
-        if(createDate != null){
-          this.properties.set("CREATEDATE",createDate);
-        }
-        if(lastModifiedDate != null){
-          this.properties.set("LASTMODDATE",lastModifiedDate);
-        }
-    }
-
-    convertPropertiesToJson(){
-      let output = "";
-      let counter = 1;
-      this.properties.forEach((value,type) => {
-        output +=     "\"@"+type+"\": \""+ value +"\"";
-        if(counter < this.properties.size){
-          output += ",";
-        }
-        counter++;
-      });
-      return output;
-    }
-    addAgent(role,name){
-        this.agents.push(new Agent(role,name));
-    }
-
-    convertToJson(){
-      let output = "\"metsHdr\": {";
-      output += this.convertPropertiesToJson();
-      if(this.agents.length >= 1){
-        output += ",";  
+  /**
+   * Represents the mets "MetsHdr" element
+   * @param {*} createDate The date of the creation
+   * @param {*} lastModifiedDate The date of the last modification
+   */
+  constructor(createDate,lastModifiedDate) {
+    this.agents = new Array();
+    this.properties = new Map();
+      if(createDate != null){
+        this.properties.set("CREATEDATE",createDate);
       }
-      output += "\"agent\": [";
+      if(lastModifiedDate != null){
+        this.properties.set("LASTMODDATE",lastModifiedDate);
+      }
+  }
 
-      let counter = 1;
-      this.agents.forEach(agent => {
-        output += agent.convertToJson();
-        if(counter < this.agents.length){
-          output += ",";
-        }
-  
-        counter++;
-      });
-      output +="]}"
-      return output;
+  /**
+   * Adds an agent to this metsHdr element
+   * @param {string} role The role of the agent
+   * @param {string} name The name of the agent
+   */
+  addAgent(role,name){
+      this.agents.push(new Agent(role,name));
+  }
+
+  /**
+   * Converts properties to a json fromated string
+   * @returns the properties as an json fromated string
+   */
+  convertPropertiesToJson(){
+    let output = "";
+    let counter = 1;
+    this.properties.forEach((value,type) => {
+      output +=     "\"@"+type+"\": \""+ value +"\"";
+      if(counter < this.properties.size){
+        output += ",";
+      }
+      counter++;
+    });
+    return output;
+  }
+
+  /**
+   * Converts the element to a json formated string
+   * @returns {string} Returns the element as a json string
+   */
+  convertToJson(){
+    let output = "\"metsHdr\": {";
+    output += this.convertPropertiesToJson();
+    if(this.agents.length >= 1){
+      output += ",";  
     }
-    
-    /*"metsHdr": {
-      \"@CREATEDATE\": \"2006-05-15T00:00:00.001\",
-      \"@LASTMODDATE\": \"value\",
-      \"agent\":[
-       {
-          \"@ROLE\": \"value\",
-          \"name\": \"value\"}
-        },
-        {
-          \"@ROLE\": \"value\",
-          \"name\": \"value\"}
-        }]
-      }*/
+    output += "\"agent\": [";
+
+    let counter = 1;
+    this.agents.forEach(agent => {
+      output += agent.convertToJson();
+      if(counter < this.agents.length){
+        output += ",";
+      }
+
+      counter++;
+    });
+    output +="]}"
+    return output;
+  }
 }

@@ -1,9 +1,11 @@
-import {DmdSec,XmlData} from './DmdSec.js';
 import {StructMap,Div} from './StructMap.js';
 import {FileSec,FileGroup } from './FileSec.js';
 import {MetsHdr} from './MetsHdr.js';
 
 export class Mets{
+    /**
+     * Represents a mets element which contains a metsHdr,a StructMap,a FileSec
+     */
     constructor(){
         this.metsHdr = new MetsHdr(this.getCurrentDate(),this.getCurrentDate());
         this.dmdSecs = [];
@@ -17,6 +19,10 @@ export class Mets{
         this.addAgent("CREATOR","METS-FILE-CREATOR-TOOL-V1");
     }
 
+    /**
+     * Creates a String with the current time and date
+     * @returns Returns a string with the current time and date. Example: "27-04-2020 12:03:03"
+     */
     getCurrentDate(){
         const t = new Date();
         const date = ('0' + t.getDate()).slice(-2);
@@ -30,30 +36,78 @@ export class Mets{
         output: "27-04-2020 12:03:03"
     }
 
+    /**
+     * Adds an agent to the mets element
+     * @param {string} role The role of the agent
+     * @param {string} name The name of the Agent
+     */
     addAgent(role,name){
         this.metsHdr.addAgent(role,name);
     }
 
-    addFile(id,link,fileGroupID){
+    /**
+     * Adds a file to the mets with fptr in the structMap and link in the fileSec
+     * @param {string} fileID The id of the file
+     * @param {string} fileLink The link to the file
+     * @param {string} fileGroupID The id of the filegroup in which the file should be added
+     * @param {string} divID The id of the div in which the fptr for the file should be added
+     */
+    addFile(fileID,fileLink,fileGroupID,divID){
+        if(!this.fileSec.containsFile(fileID)){
+            this.addFileToFileGroup(fileID,fileLink,fileGroupID);
+        }
+        this.addFptrToDiv(fileID,divID);  
+    }
+
+    /**
+     * Adds a file element to the filegroup with the given filegroupid
+     * @param {string} fileID The id of the file
+     * @param {string} fileLink The link to the file
+     * @param {string} fileGroupID The id of the filegroup
+     */
+    addFileToFileGroup(fileID,fileLink,fileGroupID){
         if(this.fileGroups.has(fileGroupID)){
-            this.fileGroups.get(fileGroupID).addFile(id,link);
-            this.divs.get(fileGroupID).addFPTR(id);
+            this.fileGroups.get(fileGroupID).addFile(fileID,fileLink);
         }
     }
 
-    addFileGroup(fileGroupID){
-        let fileGroup = new FileGroup(fileGroupID);
-        let div = new Div(fileGroupID,fileGroupID);
-
-        this.fileGroups.set(fileGroupID,fileGroup);
-        this.divs.set(fileGroupID,div);
-
-        this.rootDiv.addDiv(div);
-        this.fileSec.addFileGroup(fileGroup);
-
-        this.dmdSecs.push(new DmdSec(fileGroupID,null,"DC",new XmlData(fileGroupID,null,null,null,null,null,"place holder description")));
+    /**
+     * Adds a fptr element with the given fileID to the div with the given divID
+     * @param {string} fileID The id of the file
+     * @param {string} divID The id of the div 
+     */
+    addFptrToDiv(fileID,divID){
+        if(this.divs.has(divID)){
+            this.divs.get(divID).addFPTR(fileID);
+        }
     }
 
+    /**
+     * Adds a filegroup element to the fileSec element
+     * @param {string} fileGroupID The id of the filegroup
+     */
+    addFileGroup(fileGroupID){
+        let fileGroup = new FileGroup(fileGroupID);
+
+        this.fileGroups.set(fileGroupID,fileGroup);
+        this.fileSec.addFileGroup(fileGroup);
+
+    }
+
+    /**
+     * Adds a div element with the given divID to the structMap element
+     * @param {string} divID The id of the div
+     */
+    addDiv(divID){
+        let div = new Div(divID);
+        this.divs.set(divID,div);
+        this.rootDiv.addDiv(div);
+    }
+
+    /**
+     * Converts the mets element to a xml formated string
+     * @returns {string} Returns the mets element as a xml string
+     */
     convertToXML(){
 
         let output = "{" +

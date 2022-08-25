@@ -1,13 +1,31 @@
 
 <html>
     <head>
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script type="text/javascript" src="./json2xml.js"></script> 
         <script type="module" src="./JModels/Mets.js"></script> 
+        <script type="module" src="./mets-generator.js"></script>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div>
-            <textarea id="xmlWrapper" style="height: 801px; width: 1311px;"></textarea>
+        <div class="left">
+            <h3>METS-Generator-v1</h3>
+            <div class="section">
+            
+            </div>
         </div>
-        <script type="module" src="./testApp.js"></script>
+        <div class="right hidden">
+            <h3 class="results">Metadata</h3>
+            
+            <div class="form results">
+                <pre><code style="display:inline-block;"></code></pre>
+            </div>
+            <br />
+            <button type="button" id="download" onclick="">Save as file</button>
+            <button type="button" id="reset">Reset</button>
+            <button type="button" id="selectall">Select All</button>
+            <span class="output" id="output"></span>
+        </div>
+        
     </body>
 </html>

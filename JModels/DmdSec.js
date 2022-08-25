@@ -1,4 +1,14 @@
 export class XmlData{
+    /**
+     * Represents a xmlData element for the mets "mdWrapper" element
+     * @param {string} identifier (optional) identifier for the file/files
+     * @param {string} title (optional) title for the file/files
+     * @param {string} creator (optional) creator of the file/files
+     * @param {string} date (optional) creation date of the file/files
+     * @param {string} publisher (optional) publisher of the file/files
+     * @param {string} type (optional) type of the file/files
+     * @param {string} description (optional) description of the file/files
+     */
     constructor(identifier,title,creator,date,publisher,type,description){
         this.properties = new Map();
         if(identifier != null){
@@ -25,6 +35,10 @@ export class XmlData{
 
     }
 
+    /**
+     * Converts the properties to a json formated string
+     * @returns {string} Returns the properties as a json string
+     */
     convertPropertiesToJson(){
         let output = "";
         let counter = 1;
@@ -39,31 +53,33 @@ export class XmlData{
         return output;
     }
 
+    /**
+     * Converts the element to a json formated string
+     * @returns {string} Returns the element as a json string
+     */
     convertToJson(){
         return "\"xmlData\": {"+
                     this.convertPropertiesToJson()+
                 "}";
 
     }
-    /*
-    <xmlData>
-        <dc:creator>Washington, George, 1732-1799</dc:creator>
-        <dc:date>October 13, 1776</dc:date>
-        <dc:publisher>Harlem Heights</dc:publisher>
-        <dc:type>l. s.</dc:type>
-        <dc:format>23.0 cm. wide by 37.0 cm.high, 4 pages</dc:format>
-        <dc:description>To Artemas Ward. Reports that 'yesterday the enemy landed at Frogs Point.' Body in hand of Robert Hanson Harrison, signed by Washington. folded half sheet, multiple repairs</dc:description>
-    </xmlData>
-    */
 }
 
 export class MdWrap{
-
+    /**
+     * Represents the mets "MdWrap" element
+     * @param {string} mdtype (required) type of the metadata only for now only DC is availabel
+     * @param {XmlData} xmlData (required) xmlData object with the metadata for the description
+     */
     constructor(mdtype,xmlData){
         this.mdtype = mdtype;
         this.xmlData = xmlData;
     }
 
+    /**
+     * Converts the element to a json formated string
+     * @returns {string} Returns the element as a json string
+     */
     convertToJson(){
         return "\"mdWrap\": {"+ 
                 "\"@MDTYPE\": \""+ this.mdtype +"\","+
@@ -73,6 +89,14 @@ export class MdWrap{
 }
 
 export class DmdSec{
+
+    /**
+     * Represents a mets "DmdSec" element which contains descriptional metadata
+     * @param {string} id (required) id of the DmdSec element
+     * @param {string} groupid (optional) groupid of the DmdSec element
+     * @param {string} mdType (required) metadata type of the DmdSec element (only DC)
+     * @param {XmlData} xmlData (required) xmlData object
+     */
     constructor(id,groupid,mdType,xmlData){
         this.id = id;
         this.groupid = groupid;
@@ -84,6 +108,10 @@ export class DmdSec{
         }
     }
 
+    /**
+     * Converts properties to a json fromated string
+     * @returns the properties as an json fromated string
+     */
     convertPropertiesToJson(){
         let output = "";
         let counter = 1;
@@ -95,6 +123,10 @@ export class DmdSec{
         return output;
     }
 
+    /**
+     * Converts the element to a json formated string
+     * @returns {string} Returns the element as a json string
+     */
     convertToJson(){
         return "{"+
                     this.convertPropertiesToJson()+
