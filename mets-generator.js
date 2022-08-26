@@ -1,5 +1,83 @@
 import {Mets} from './JModels/Mets.js';
 
+var metadata = "";
+
+
+
+$(document).ready(function() {
+    $("button.add.group").bind("click", function(event, callback) {
+        console.log(callback)
+        event.preventDefault();
+        var d = $(this).parent().find(".tag-group:first").clone();
+        $(d).find("input,select").val("");
+        $(d).find("input + button.delete.element").each(function() {
+        $(this).prev("input").remove();
+        $(this).remove();
+        });
+        $("<button/>", {"class":"delete group", type:"button", text:"-"}).appendTo($(d).find(".tag:first"));
+        d.appendTo($(this).parent());
+        if (callback !== null) callback(d);
+    });
+
+    $("#reset").bind("click", function(event) {
+        event.preventDefault();
+        location.reload(true);
+    });
+
+    $("body").on("click", "button.add.single-tag", function(event, callback) {
+        event.preventDefault();
+        var c = $(this).parent().clone();
+        $(c).find("input,select").val("");
+        $(this).before($("<button/>", {"class":"delete single-tag", type:"button", text:"-"}));
+        $(this).parent().after(c);
+        $(this).remove();
+        if (callback !== null) callback(c);
+    });	
+
+    $("body").on("click", "button.delete.single-tag", function(event) {
+        event.preventDefault();
+        $(this).parent().remove();
+    });
+
+    $("div.section").on("mouseenter mouseleave focusin focusout", "button.delete.group, button.delete.single-tag", function(event) {
+        event.preventDefault();
+        $(this).parent().toggleClass("remove-highlight");
+    });
+
+    $("body").on("click", "button#more", function(event) {
+        event.preventDefault();
+        var div = $(this).parent();
+        $(div).find("button#more").hide();
+        $(div).find("div#subgroup,button#less").show();
+    });
+
+    $("body").on("click", "button#less", function(event) {
+        event.preventDefault();
+        var div = $(this).parent();
+        $(div).find("div#subgroup,button#less").hide();
+        $(div).find("button#more").show();
+        $(div).find("div#subgroup input,div#subgroup select").val("");
+        $("input").eq(0).keyup();
+    });
+
+    $("#download").bind("click", function(){downloadFile()});
+
+    $("#generate").bind("click", function(){run()});
+    var selectorRole = $("div[title~=agent]").children("select[title~=role]");
+    var selectorfileType = $("div[title~=files]").children("select[title~=fileType]");
+    var selectorViewer = $("div[title~=files]").children("select[title~=viewer]");
+    addValueToSelector(selectorRole,"Editor","EDITOR");
+    addValueToSelector(selectorfileType,"CSV","csv");
+    addValueToSelector(selectorViewer,"Heurist","heurist");
+    addValueToSelector(selectorViewer,"Heurist-Preview","heurist-preview");
+
+});
+
+function addValueToSelector(selector,text,value){
+    var option = new Option(text, value);
+    selector.append($(option));
+}
+
 /**
  * Creates a xml string with correct tabs and spaces
  * @param {*} sourceXml The xml string which should be "prettified"
@@ -30,35 +108,77 @@ var prettifyXml = function(sourceXml)
 };
 
 function run(){
-
+   
     let mets = new Mets();
-    mets.addFileGroup("preview");
-    mets.addFileGroup("csv");
+    
     //generator needs to add possible GUI variants as divs
     mets.addDiv("epidoc");
+    mets.addDiv("epidoc-preview");
     mets.addDiv("heurist")
-    mets.addDiv("heurist-preview","heurist-preview");
-    mets.addDiv("epidoc-preview","epidoc-preview");
-    mets.addFileGroup("preview-epidoc");
-    mets.addFileGroup("epidoc");
+    mets.addDiv("heurist-preview");
+
+    mets.addFileGroup("preview");
+    mets.addFileGroup("csv");
+
 
 
     //Values from user input
-    mets.addAgent("EDITOR","Max Mustermann");
-    mets.addFile("epidocCSV01","http://dlib.nyu.edu/divlib/bobst/fales/imls_maass/images/maass/jpg/900000_902000/900345s.csv","csv","epidoc");
-    mets.addFile("epidocCSV02","http://dlib.nyu.edu/divlib/bobst/fales/imls_maass/images/maass/jpg/900000_902000/900345s.csv","csv","epidoc");
-    mets.addFile("epidocCSV03","http://dlib.nyu.edu/divlib/bobst/fales/imls_maass/images/maass/jpg/900000_902000/900345s.csv","csv","epidoc");
-    mets.addFile("epidocCSV03","http://dlib.nyu.edu/divlib/bobst/fales/imls_maass/images/maass/jpg/900000_902000/900345s.csv","csv","heurist");
-    mets.addFile("epidocViewer","http://dlib.nyu.edu/divlib/bobst/fales/imls_maass/images/maass/jpg/900000_902000/900345s.csv","preview","epidoc-preview");
+    $("div[title~=agent]").each(function() {
+        var name = $(this).children("input[title~=name]").val();
+        var role = $(this).children("select[title~=role]").val();
+        //Hier muss noch abgefangen werden ob Name/Rolle Leer ist -> wenn ja Error visualisierung
+        mets.addAgent(role,name); 
+    });
 
+    $("div[title~=files]").each(function() {
+        var fileID = $(this).children("input[title~=fileID]").val();
+        var fileLink = $(this).children("input[title~=fileLink]").val();
+        var fileType = $(this).children("select[title~=fileType]").val();
+        var viewer = $(this).children("select[title~=viewer]").val();
+
+        //Error behandelung und visualisierung fehlt noch
+        mets.addFile(fileID,fileLink,fileType,viewer);
+    });
 
     let xmlString = mets.convertToXML();
     
     //output formated xml string on html site
     //document.getElementById("xmlWrapper").innerHTML =  prettifyXml(xmlString);
-    $("div.right code").text(prettifyXml(xmlString));
+    metadata = prettifyXml(xmlString);
+    $("div.right code").text(metadata);
     $(".right").show();
     
+};
+
+
+var MIME_TYPE = "application/xml";
+function cleanUp(a) {
+  setTimeout(function() {
+    window.URL.revokeObjectURL(a.href);
+  }, 1500);
+  $("span#output").html("");
 }
 
-window.onload = run(); 
+function downloadFile() {
+    window.URL = window.webkitURL || window.URL;
+    var prevLink = $("span#output a");
+    if (prevLink) {
+        $("span#output").html("");
+    }
+    var bb = new Blob([metadata], {type:MIME_TYPE});
+    if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(bb, "metadata.xml");
+    } else {
+        var a = document.createElement("a");
+        a.download = "metadata.xml";
+        a.href = window.URL.createObjectURL(bb);
+        a.onclick = function(e) {
+        if ($(this).is(":disabled")) {
+            return false;
+        }
+        cleanUp(this);
+        };
+        $(a).appendTo($("span#output"));
+        $(a)[0].click();
+    }
+}

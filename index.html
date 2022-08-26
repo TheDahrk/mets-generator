@@ -10,9 +10,40 @@
     <body>
         <div class="left">
             <h3>METS-Generator-v1</h3>
-            <div class="section">
-            
+            <div class="form ">
+                <div title="creators" class="section wrapper-tag">
+                    <span class="tag-group-label">Agent(s):
+                    <a class="tag-group-info" href="https://github.com/UB-LMU/DataCite_BestPracticeGuide/blob/master/BestPracticeGuide.md#creator" target="_blank"> ? </a>
+                    </span>
+                    <div class="tag-group">
+                        <div title="agent" class="tag">
+                            <input class="half-width input-field tag-value" type="text" placeholder="[Name]" title="name" value="" />
+                            <select class="half-width input-field tag-attribute"  title="role">
+                                <option value="" disabled selected hidden>Role</option>
+                            </select>
+                        </div><button type="button" class="add single-tag">+</button>
+                    </div>
+                </div>
+                <div title="creators" class="section wrapper-tag">
+                    <span class="tag-group-label">File(s):
+                    <a class="tag-group-info" href="https://github.com/UB-LMU/DataCite_BestPracticeGuide/blob/master/BestPracticeGuide.md#creator" target="_blank"> ? </a>
+                    </span>
+                    <div class="tag-group">
+                        <div title="files" class="tag">
+                            <input class="half-width input-field tag-value" type="text" placeholder="[File Name]" title="fileID" value="" />
+                            <input class="half-width input-field tag-value" type="text" placeholder="[Link]" title="fileLink" value="" />
+                            <select class="half-width input-field tag-attribute"  title="fileType">
+                                <option value="" disabled selected hidden>Filetype</option>
+                            </select>
+                            <select class="half-width input-field tag-attribute"  title="viewer">
+                                <option value="" disabled selected hidden>Viewer</option>
+                            </select>
+                        </div><button type="button" class="add single-tag">+</button>
+                    </div>
+                </div>
             </div>
+            <br/>
+            <button type="button" id="generate" onclick="">Generate Mets</button>
         </div>
         <div class="right hidden">
             <h3 class="results">Metadata</h3>
