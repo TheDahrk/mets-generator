@@ -16,7 +16,6 @@ $(document).ready(function() {
         });
         $("<button/>", {"class":"delete group", type:"button", text:"-"}).appendTo($(d).find(".tag:first"));
         d.appendTo($(this).parent());
-        if (callback !== null) callback(d);
     });
 
     $("#reset").bind("click", function(event) {
@@ -31,7 +30,6 @@ $(document).ready(function() {
         $(this).before($("<button/>", {"class":"delete single-tag", type:"button", text:"-"}));
         $(this).parent().after(c);
         $(this).remove();
-        if (callback !== null) callback(c);
     });	
 
     $("body").on("click", "button.delete.single-tag", function(event) {
@@ -68,6 +66,7 @@ $(document).ready(function() {
     var selectorViewer = $("div[title~=files]").children("select[title~=viewer]");
     addValueToSelector(selectorRole,"Editor","EDITOR");
     addValueToSelector(selectorfileType,"CSV","csv");
+    addValueToSelector(selectorfileType,"Epidoc","epidoc");
     addValueToSelector(selectorViewer,"Heurist","heurist");
     addValueToSelector(selectorViewer,"Heurist-Preview","heurist-preview");
 
@@ -108,7 +107,6 @@ var prettifyXml = function(sourceXml)
 };
 
 function run(){
-   
     let mets = new Mets();
     
     //generator needs to add possible GUI variants as divs
@@ -119,13 +117,15 @@ function run(){
 
     mets.addFileGroup("preview");
     mets.addFileGroup("csv");
+    mets.addFileGroup("epidoc");
 
-
+    var emptyField = false;
 
     //Values from user input
     $("div[title~=agent]").each(function() {
         var name = $(this).children("input[title~=name]").val();
         var role = $(this).children("select[title~=role]").val();
+        if(name === null || role === null ) emptyField = true;
         //Hier muss noch abgefangen werden ob Name/Rolle Leer ist -> wenn ja Error visualisierung
         mets.addAgent(role,name); 
     });
@@ -136,9 +136,14 @@ function run(){
         var fileType = $(this).children("select[title~=fileType]").val();
         var viewer = $(this).children("select[title~=viewer]").val();
 
+        if(fileID === null || fileLink === null || fileType === null || viewer === null ) emptyField = true;
         //Error behandelung und visualisierung fehlt noch
         mets.addFile(fileID,fileLink,fileType,viewer);
     });
+    if(emptyField){
+        inputError();
+        return;
+    }
 
     let xmlString = mets.convertToXML();
     
@@ -150,8 +155,18 @@ function run(){
     
 };
 
+function inputError(){
+    $("input, select").each(function() {
+        $(this).removeClass("error-highlight");
+        if($(this).val() === null || $(this).val().length == 0){
+            $(this).toggleClass("error-highlight");
+        }
+    });
+    alert("One or more fields are empty! Please fill all fields to generate the file.");
+}
 
-var MIME_TYPE = "application/xml";
+
+
 function cleanUp(a) {
   setTimeout(function() {
     window.URL.revokeObjectURL(a.href);
@@ -160,6 +175,7 @@ function cleanUp(a) {
 }
 
 function downloadFile() {
+    var MIME_TYPE = "application/xml";
     window.URL = window.webkitURL || window.URL;
     var prevLink = $("span#output a");
     if (prevLink) {
