@@ -10,12 +10,13 @@ export class Mets{
         this.metsHdr = new MetsHdr(this.getCurrentDate(),this.getCurrentDate());
         this.dmdSecs = [];
         this.fileSec = new FileSec();
-        this.structMap = new StructMap("s01");
-        this.rootDiv = new Div("root");
         this.fileGroups = new Map();
-        this.divs = new Map();
 
-        this.structMap.addDiv(this.rootDiv);
+        this.structMap = new StructMap("s01");
+        this.divs = new Map();
+        this.divs.set("root",new Div("root"));
+        this.structMap.addDiv(this.getDivByID("root"));
+
         this.addAgent("CREATOR","METS-FILE-CREATOR-TOOL-V1");
     }
 
@@ -46,20 +47,6 @@ export class Mets{
     }
 
     /**
-     * Adds a file to the mets with fptr in the structMap and link in the fileSec
-     * @param {string} fileID The id of the file
-     * @param {string} fileLink The link to the file
-     * @param {string} fileGroupID The id of the filegroup in which the file should be added
-     * @param {string} divID The id of the div in which the fptr for the file should be added
-     */
-    addFile(fileID,fileLink,fileGroupID,divID){
-        if(!this.fileSec.containsFile(fileID)){
-            this.addFileToFileGroup(fileID,fileLink,fileGroupID);
-        }
-        this.addFptrToDiv(fileID,divID);  
-    }
-
-    /**
      * Adds a file element to the filegroup with the given filegroupid
      * @param {string} fileID The id of the file
      * @param {string} fileLink The link to the file
@@ -71,15 +58,15 @@ export class Mets{
         }
     }
 
-    /**
-     * Adds a fptr element with the given fileID to the div with the given divID
-     * @param {string} fileID The id of the file
-     * @param {string} divID The id of the div 
-     */
-    addFptrToDiv(fileID,divID){
-        if(this.divs.has(divID)){
-            this.divs.get(divID).addFPTR(fileID);
+    addFPTRToDiv(divID,fileID){
+        if(!this.divIDExists(divID)){
+            return;
         }
+        var div = this.getDivByID(divID);
+        if(div.containsFptr(fileID)){
+            return;
+        }
+        div.addFPTR(fileID);
     }
 
     /**
@@ -88,20 +75,44 @@ export class Mets{
      */
     addFileGroup(fileGroupID){
         let fileGroup = new FileGroup(fileGroupID);
-
         this.fileGroups.set(fileGroupID,fileGroup);
         this.fileSec.addFileGroup(fileGroup);
 
     }
+    
 
-    /**
-     * Adds a div element with the given divID to the structMap element
-     * @param {string} divID The id of the div
-     */
-    addDiv(divID){
+    addDivToDiv(divIDToAdd,divID){
+        if(!this.divIDExists(divIDToAdd)){
+            return;
+        }
         let div = new Div(divID);
         this.divs.set(divID,div);
-        this.rootDiv.addDiv(div);
+        this.getDivByID(divIDToAdd).addDiv(div);
+        
+    }
+
+    addCSVFile(divID,fileID,fileLink,listOfSubFiles){
+        this.addDivToDiv(divID,fileID);
+        this.addFPTRToDiv(fileID,fileID);
+        this.addFileToFileGroup(fileID,fileLink,"csv");
+
+        /*
+         *  [0] = subFileID
+         *  [1] = subFileLink
+         *  [2] = subFileType
+         */
+        listOfSubFiles.forEach(array => {
+            this.addFileToFileGroup(array[0],array[1],array[2]);
+            this.addFPTRToDiv(fileID,array[0]);
+        });
+    }
+
+    divIDExists(divID){
+        return this.divs.has(divID);
+    }
+
+    getDivByID(divID){
+        return this.divs.get(divID);
     }
 
     /**

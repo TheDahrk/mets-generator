@@ -12,9 +12,7 @@
             <h3>METS-Generator-v1</h3>
             <div class="form ">
                 <div title="creators" class="section wrapper-tag">
-                    <span class="tag-group-label">Agent(s):
-                    <a class="tag-group-info" href="https://github.com/UB-LMU/DataCite_BestPracticeGuide/blob/master/BestPracticeGuide.md#creator" target="_blank"> ? </a>
-                    </span>
+                    <span class="tag-group-label">Author(s):</span>
                     <div class="tag-group">
                         <div title="agent" class="tag">
                             <input class="half-width input-field tag-value" type="text" placeholder="[Name]" title="name" value="" />
@@ -23,23 +21,34 @@
                             </select>
                         </div><button type="button" class="add single-tag">+</button>
                     </div>
+                    <span class="divider">&nbsp;</span>
                 </div>
                 <div title="creators" class="section wrapper-tag">
-                    <span class="tag-group-label">File(s):
-                    <a class="tag-group-info" href="https://github.com/UB-LMU/DataCite_BestPracticeGuide/blob/master/BestPracticeGuide.md#creator" target="_blank"> ? </a>
-                    </span>
+                    
                     <div class="tag-group">
-                        <div title="files" class="tag">
-                            <input class="half-width input-field tag-value" type="text" placeholder="[File Name]" title="fileID" value="" />
-                            <input class="half-width input-field tag-value" type="text" placeholder="[Link]" title="fileLink" value="" />
-                            <select class="half-width input-field tag-attribute"  title="fileType">
-                                <option value="" disabled selected hidden>Filetype</option>
-                            </select>
-                            <select class="half-width input-field tag-attribute"  title="viewer">
-                                <option value="" disabled selected hidden>Viewer</option>
-                            </select>
-                        </div><button type="button" class="add single-tag">+</button>
-                    </div>
+                        <div title = "csvfile-wrapper" class="tag">
+                            <span class="tag-group-label">CSV File(s):</span>
+                            <div title="csvfile" class="tag">
+                                <input class="half-width input-field tag-value" type="text" placeholder="[File Name]" title="fileID" value="" />
+                                <input class="half-width input-field tag-value" type="text" placeholder="[Link]" title="fileLink" value="" />
+                                <select class="half-width input-field tag-attribute"  title="viewer">
+                                    <option value="" disabled selected hidden>Viewer</option>
+                                </select>
+                                <br>
+                            </div>
+                            <span class="tag-group-label">Content of CSV File:</span>
+                            <div title="subfiles" class="tag">
+                                <input class="half-width input-field tag-value" type="text" placeholder="[File Name]" title="fileID" value="" />
+                                <input class="half-width input-field tag-value" type="text" placeholder="[Link]" title="fileLink" value="" />
+                                <select class="half-width input-field tag-attribute"  title="fileType">
+                                    <option value="" disabled selected hidden>Filetype</option>
+                                </select>
+                                <button type="button" class="add single-tag">+</button>   
+                                <br> 
+                            </div>
+                            <span class="divider">&nbsp;</span>
+                        </div>
+                    </div><button type="button" class="add group">+</button>
                 </div>
             </div>
             <br/>

@@ -11,11 +11,17 @@ $(document).ready(function() {
         var d = $(this).parent().find(".tag-group:first").clone();
         $(d).find("input,select").val("");
         $(d).find("input + button.delete.element").each(function() {
-        $(this).prev("input").remove();
-        $(this).remove();
+            $(this).prev("input").remove();
+            $(this).remove();
         });
         $("<button/>", {"class":"delete group", type:"button", text:"-"}).appendTo($(d).find(".tag:first"));
         d.appendTo($(this).parent());
+    });
+
+    $("div.section").on("click", "button.delete.group", function(event) {
+        event.preventDefault();
+        $(this).parent().remove();
+        $("input").eq(0).keyup();
     });
 
     $("#reset").bind("click", function(event) {
@@ -62,13 +68,17 @@ $(document).ready(function() {
 
     $("#generate").bind("click", function(){run()});
     var selectorRole = $("div[title~=agent]").children("select[title~=role]");
-    var selectorfileType = $("div[title~=files]").children("select[title~=fileType]");
-    var selectorViewer = $("div[title~=files]").children("select[title~=viewer]");
+    var selectorfileType = $("div[title~=subfiles]").children("select[title~=fileType]");
+    var selectorViewer = $("div[title~=csvfile]").children("select[title~=viewer]");
+
     addValueToSelector(selectorRole,"Editor","EDITOR");
+    addValueToSelector(selectorRole,"Creator","CREATOR");
     addValueToSelector(selectorfileType,"CSV","csv");
     addValueToSelector(selectorfileType,"Epidoc","epidoc");
+    addValueToSelector(selectorfileType,"TEI","tei");
     addValueToSelector(selectorViewer,"Heurist","heurist");
-    addValueToSelector(selectorViewer,"Heurist-Preview","heurist-preview");
+    addValueToSelector(selectorViewer,"Sortable6","sortable6");
+    addValueToSelector(selectorViewer,"NETamil2","netamil2");
 
 });
 
@@ -108,16 +118,16 @@ var prettifyXml = function(sourceXml)
 
 function run(){
     let mets = new Mets();
-    
+    cleanError();
     //generator needs to add possible GUI variants as divs
-    mets.addDiv("epidoc");
-    mets.addDiv("epidoc-preview");
-    mets.addDiv("heurist")
-    mets.addDiv("heurist-preview");
+    mets.addDivToDiv("root","heurist");
+    mets.addDivToDiv("root","sortable6");
+    mets.addDivToDiv("root","netamil2");
 
     mets.addFileGroup("preview");
     mets.addFileGroup("csv");
     mets.addFileGroup("epidoc");
+    mets.addFileGroup("tei");
 
     var emptyField = false;
 
@@ -130,16 +140,24 @@ function run(){
         mets.addAgent(role,name); 
     });
 
-    $("div[title~=files]").each(function() {
-        var fileID = $(this).children("input[title~=fileID]").val();
-        var fileLink = $(this).children("input[title~=fileLink]").val();
-        var fileType = $(this).children("select[title~=fileType]").val();
-        var viewer = $(this).children("select[title~=viewer]").val();
-
-        if(fileID === null || fileLink === null || fileType === null || viewer === null ) emptyField = true;
+    $("div[title~=csvfile-wrapper]").each(function() {
+        var csvFileID = $(this).children("div[title~=csvfile]").children("input[title~=fileID]").val();
+        var csvFileLink = $(this).children("div[title~=csvfile]").children("input[title~=fileLink]").val();
+        var viewer = $(this).children("div[title~=csvfile]").children("select[title~=viewer]").val();
+        var listOfSubFiles = new Array;
+        $(this).children("div[title~=subfiles]").each(function() {
+            var subFileID = $(this).children("input[title~=fileID]").val();
+            var subFileLink = $(this).children("input[title~=fileLink]").val();
+            var subFileType = $(this).children("select[title~=fileType]").val();
+            if(subFileID.length == 0 ||  subFileLink.length == 0 || subFileType === null) emptyField = true;
+            listOfSubFiles.push([subFileID,subFileLink,subFileType]);
+            
+        });
+        if(csvFileID.length == 0 || csvFileLink.length == 0 || viewer === null) emptyField = true;
         //Error behandelung und visualisierung fehlt noch
-        mets.addFile(fileID,fileLink,fileType,viewer);
+        mets.addCSVFile(viewer,csvFileID,csvFileLink,listOfSubFiles);
     });
+    
     if(emptyField){
         inputError();
         return;
@@ -157,15 +175,21 @@ function run(){
 
 function inputError(){
     $("input, select").each(function() {
-        $(this).removeClass("error-highlight");
-        if($(this).val() === null || $(this).val().length == 0){
-            $(this).toggleClass("error-highlight");
+        var value = $(this).val();
+        if(value === null || value.length == 0){
+            $(this).addClass("error-highlight");
         }
     });
     alert("One or more fields are empty! Please fill all fields to generate the file.");
 }
 
+function cleanError(){
+    $("input, select").each(function() {
+        $(this).removeClass("error-highlight");
+    });
+}
 
+//-------------File-Download--------------------------
 
 function cleanUp(a) {
   setTimeout(function() {
