@@ -62,11 +62,11 @@ export class Div{
   }
 
   /**
-   * Adds a Div element to this Div element
-   * @param {Div} div The Div object which should be added
+   * Adds a Div element to the this StructMap element (a root div is required which contains all other divs)
+   * @param {Div} div the Div element which should be added
    */
   addDiv(div){
-      this.divs.push(div);
+    this.divs.push(div);
   }
 
   /**
@@ -84,6 +84,30 @@ export class Div{
     }
     return contains;
   }
+
+  /**
+   * Converts the element to a json formated string
+   * @returns {string} Returns the element as a json string
+   */
+   convertToJson(){
+    let output = "{";
+    output += this.convertPropertiesToJson();
+    if(this.divs.length >= 1 || this.fptrs.length >= 1){
+      output += ",";
+    }
+    if(this.divs.length > 0){
+      output += this.convertDivsToJson();
+    }
+    if(this.divs.length >= 1 && this.fptrs.length >= 1){
+      output += ",";
+    }
+    if(this.fptrs.length > 0){
+      output += this.convertFptrToJson();
+    }
+    output +=   "}";
+    return output;
+  }
+
 
   /**
    * Converts properties to a json fromated string
@@ -112,6 +136,7 @@ export class Div{
     let counter = 1;
     output += "\"div\": [";
     this.divs.forEach(div => {
+      console.log(div);
       output += div.convertToJson();
       if(counter < this.divs.length){
         output += ",";
@@ -143,28 +168,6 @@ export class Div{
     return output;
   }
 
-  /**
-   * Converts the element to a json formated string
-   * @returns {string} Returns the element as a json string
-   */
-  convertToJson(){
-    let output = "{";
-    output += this.convertPropertiesToJson();
-    if(this.divs.length >= 1 || this.fptrs.length >= 1){
-      output += ",";
-    }
-    if(this.divs.length > 0){
-      output += this.convertDivsToJson();
-    }
-    if(this.divs.length >= 1 && this.fptrs.length >= 1){
-      output += ",";
-    }
-    if(this.fptrs.length > 0){
-      output += this.convertFptrToJson();
-    }
-    output +=   "}";
-    return output;
-  }
 }
 
 export class StructMap {

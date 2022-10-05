@@ -150,6 +150,15 @@ div.left h3{
     -webkit-transition:all 0.1s linear 0s, border-color 0s;
     transition:all 0.1s linear 0s, border-color 0s
 }
+
+.error-highlight{
+    border-color:rgb(239, 6, 6);
+    border-style:solid;
+    border-width:1px;
+    border-radius:5px;
+    -webkit-transition:all 0.1s linear 0s, border-color 0s;
+    transition:all 0.1s linear 0s, border-color 0s
+}
 button:hover,h3.other:hover,h3.recommended:hover{
     cursor:pointer
 }
