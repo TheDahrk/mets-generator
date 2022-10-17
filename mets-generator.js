@@ -119,11 +119,13 @@ var prettifyXml = function(sourceXml)
 function run(){
     let mets = new Mets();
     cleanError();
-    //generator needs to add possible GUI variants as divs
+    //generator needs to add possible GUI variants as divs to the root div
+    mets.addDivToDiv("root","root");
     mets.addDivToDiv("root","heurist");
     mets.addDivToDiv("root","sortable6");
     mets.addDivToDiv("root","netamil2");
 
+    //generator needs to add possible fileTypes as a Filegroup
     mets.addFileGroup("preview");
     mets.addFileGroup("csv");
     mets.addFileGroup("epidoc");
@@ -132,14 +134,15 @@ function run(){
     var emptyField = false;
 
     //Values from user input
+    //Agent section
     $("div[title~=agent]").each(function() {
         var name = $(this).children("input[title~=name]").val();
         var role = $(this).children("select[title~=role]").val();
         if(name === null || role === null ) emptyField = true;
-        //Hier muss noch abgefangen werden ob Name/Rolle Leer ist -> wenn ja Error visualisierung
         mets.addAgent(role,name); 
     });
 
+    //Adding CSV Files and Sub Files
     $("div[title~=csvfile-wrapper]").each(function() {
         var csvFileID = $(this).children("div[title~=csvfile]").children("input[title~=fileID]").val();
         var csvFileLink = $(this).children("div[title~=csvfile]").children("input[title~=fileLink]").val();

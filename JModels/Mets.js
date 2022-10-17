@@ -11,12 +11,7 @@ export class Mets{
         this.dmdSecs = [];
         this.fileSec = new FileSec();
         this.fileGroups = new Map();
-
         this.structMap = new StructMap("s01");
-        this.divs = new Map();
-        this.divs.set("root",new Div("root"));
-        this.structMap.addDiv(this.getDivByID("root"));
-
         this.addAgent("CREATOR","METS-FILE-CREATOR-TOOL-V1");
     }
 
@@ -62,7 +57,7 @@ export class Mets{
         if(!this.divIDExists(divID)){
             return;
         }
-        var div = this.getDivByID(divID);
+        var div = this.structMap.getDivByID(divID);
         if(div.containsFptr(fileID)){
             return;
         }
@@ -82,12 +77,10 @@ export class Mets{
     
 
     addDivToDiv(divIDToAdd,divID){
-        if(!this.divIDExists(divIDToAdd)){
-            return;
+        if(this.divIDExists(divID)){
+            return false;
         }
-        let div = new Div(divID);
-        this.divs.set(divID,div);
-        this.getDivByID(divIDToAdd).addDiv(div);
+        return this.structMap.addDiv(divIDToAdd,divID);
         
     }
 
@@ -108,11 +101,10 @@ export class Mets{
     }
 
     divIDExists(divID){
-        return this.divs.has(divID);
-    }
-
-    getDivByID(divID){
-        return this.divs.get(divID);
+        if (this.structMap.getDivByID(divID) != null){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -146,7 +138,7 @@ export class Mets{
         console.log(output);
         console.log(json)
         let xmlString = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?> \n\n "+
-                        "<mets xmlns=\"http://www.loc.gov/METS/\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" OBJID=\"f000446\" xsi:schemaLocation=\"http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://purl.org/dc/elements/1.1/ http://dublincore.org/schemas/xmls/simpledc20021212.xsd\">"+
+                        "<mets xmlns=\"http://www.loc.gov/METS/\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xsi:schemaLocation=\"http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://purl.org/dc/elements/1.1/ http://dublincore.org/schemas/xmls/simpledc20021212.xsd\">"+
                             json2xml(json)+
                         "</mets>";
         return xmlString;
