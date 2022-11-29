@@ -38,7 +38,10 @@ export class Mets{
      * @param {string} name The name of the Agent
      */
     addAgent(role,name){
-        this.metsHdr.addAgent(role,name);
+        if(!this.metsHdr.checkAgentExist(role,name)){
+            this.metsHdr.addAgent(role,name);
+        }
+        
     }
 
     /**
@@ -48,7 +51,7 @@ export class Mets{
      * @param {string} fileGroupID The id of the filegroup
      */
     addFileToFileGroup(fileID,fileLink,fileGroupID){
-        if(this.fileGroups.has(fileGroupID)){
+        if(this.fileGroups.has(fileGroupID) && !this.fileSec.containsFile(fileID)){
             this.fileGroups.get(fileGroupID).addFile(fileID,fileLink);
         }
     }

@@ -30,6 +30,22 @@ export class Agent{
               "\"name\": \"" + this.name + "\"" +
            "}";
   }
+
+  /**
+   * Returns the name of the Agent
+   * @returns {string} Returns the name
+   */
+  getName(){
+    return this.name;
+  }
+  
+  /**
+   * Returns the role of the agent
+   * @returns {string} Returns the role
+   */
+   getRole(){
+    return this.role;
+  }
 }
 
 
@@ -99,5 +115,21 @@ export class MetsHdr {
     });
     output +="]}"
     return output;
+  }
+  
+
+  /**
+   * Checks if a agent with the same name and role already exist
+   * @returns {boolean} Returns true if agents exist, else false
+   */
+  checkAgentExist(role,name){
+    var exist = false;
+    this.agents.forEach(agent => {
+      if(agent.getName().toLowerCase() == name.toLowerCase() && agent.getRole().toLowerCase() == role.toLowerCase()){
+        exist = true;
+      }
+    });
+
+    return exist;
   }
 }
