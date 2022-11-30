@@ -16,9 +16,9 @@ export class Agent{
    * @param {string} role The role of the agent
    * @param {string} name The name of the agent
    */
-  constructor(role,name){
-    this.role = role;
-    this.name = name;
+  constructor(options){
+    this.role = options.role;
+    this.name = options.name;
   }
   /**
    * Converts the element to a json formated string
@@ -55,14 +55,14 @@ export class MetsHdr {
    * @param {*} createDate The date of the creation
    * @param {*} lastModifiedDate The date of the last modification
    */
-  constructor(createDate,lastModifiedDate) {
+  constructor(options) {
     this.agents = new Array();
     this.properties = new Map();
-      if(createDate != null){
-        this.properties.set("CREATEDATE",createDate);
+      if(options.createDate != null){
+        this.properties.set("CREATEDATE",options.createDate);
       }
-      if(lastModifiedDate != null){
-        this.properties.set("LASTMODDATE",lastModifiedDate);
+      if(options.lastModifiedDate != null){
+        this.properties.set("LASTMODDATE",options.lastModifiedDate);
       }
   }
 
@@ -71,8 +71,11 @@ export class MetsHdr {
    * @param {string} role The role of the agent
    * @param {string} name The name of the agent
    */
-  addAgent(role,name){
-      this.agents.push(new Agent(role,name));
+  addAgent(options){
+      this.agents.push(new Agent({
+        role: options.role,
+        name: options.name
+      }));
   }
 
   /**
@@ -122,14 +125,13 @@ export class MetsHdr {
    * Checks if a agent with the same name and role already exist
    * @returns {boolean} Returns true if agents exist, else false
    */
-  checkAgentExist(role,name){
+  checkAgentExist(options){
     var exist = false;
     this.agents.forEach(agent => {
-      if(agent.getName().toLowerCase() == name.toLowerCase() && agent.getRole().toLowerCase() == role.toLowerCase()){
+      if(agent.getName().toLowerCase() == options.name.toLowerCase() && agent.getRole().toLowerCase() == options.role.toLowerCase()){
         exist = true;
       }
     });
-
     return exist;
   }
 }

@@ -35,21 +35,21 @@ export class Div{
    * @param {string} type (optional) type of the div element
    * @param {string} order (optional) order of the div element
    */
-  constructor(label,dmdid,type,order){
+  constructor(options){
       this.fptrs = [];
       this.divs = new Map;
       this.properties = new Map();
-      if(label != null){
-        this.properties.set("LABEL",label);
+      if(options.label != null){
+        this.properties.set("LABEL",options.label);
       }
-      if(dmdid != null){
-        this.properties.set("DMDID",dmdid);
+      if(options.dmdid != null){
+        this.properties.set("DMDID",options.dmdid);
       }
-      if(type != null){
-        this.properties.set("TYPE",type);
+      if(options.type != null){
+        this.properties.set("TYPE",options.type);
       }
-      if(order != null){
-        this.properties.set("ORDER",order);
+      if(options.order != null){
+        this.properties.set("ORDER",options.order);
       }
   }
   
@@ -66,7 +66,7 @@ export class Div{
    * @param {Div} div the Div element which should be added
    */
   addDiv(divID){
-    this.divs.set(divID,new Div(divID));
+    this.divs.set(divID,new Div({label : divID}));
   }
 
   /**
@@ -219,15 +219,16 @@ export class StructMap {
    * Adds a Div element to the this StructMap element (a root div is required which contains all other divs)
    * @param {Div} div the Div element which should be added
    */
-  addDiv(divIDToAdd,newDivID){
-      if(divIDToAdd == newDivID){
-        this.divs.set(newDivID,new Div(newDivID));
+  //{divIDToAdd,newDivID}
+  addDiv(options){
+      if(options.divIDToAdd == options.divID){
+        this.divs.set(options.divID,new Div({label : options.divID}));
         return true;
       }
 
-      var foundDiv = this.getDivByID(divIDToAdd);
+      var foundDiv = this.getDivByID(options.divIDToAdd);
       if(foundDiv != null){
-        foundDiv.addDiv(newDivID);
+        foundDiv.addDiv(options.divID);
         return true;
       }
       return false;

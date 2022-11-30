@@ -120,10 +120,10 @@ function run(){
     let mets = new Mets();
     cleanError();
     //generator needs to add possible GUI variants as divs to the root div
-    mets.addDivToDiv("root","root");
-    mets.addDivToDiv("root","heurist");
-    mets.addDivToDiv("root","sortable6");
-    mets.addDivToDiv("root","netamil2");
+    mets.addDivToDiv({divIDToAdd : "root",divID : "root"});
+    mets.addDivToDiv({divIDToAdd : "root",divID : "sortable6"});
+    mets.addDivToDiv({divIDToAdd : "root",divID : "netamil2"});
+    mets.addDivToDiv({divIDToAdd : "root",divID : "heurist"});
 
     //generator needs to add possible fileTypes as a Filegroup
     mets.addFileGroup("preview");
@@ -139,7 +139,10 @@ function run(){
         var name = $(this).children("input[title~=name]").val();
         var role = $(this).children("select[title~=role]").val();
         if(name === null || role === null ) emptyField = true;
-        mets.addAgent(role,name); 
+        mets.addAgent({
+            role : role,
+            name : name
+        }); 
     });
 
     //Adding CSV Files and Sub Files
@@ -156,9 +159,15 @@ function run(){
             listOfSubFiles.push([subFileID,subFileLink,subFileType]);
             
         });
+
         if(csvFileID.length == 0 || csvFileLink.length == 0 || viewer === null) emptyField = true;
-        //Error behandelung und visualisierung fehlt noch
-        mets.addCSVFile(viewer,csvFileID,csvFileLink,listOfSubFiles);
+
+        mets.addCSVFile({
+            divID : viewer,
+            fileID : csvFileID,
+            fileLink : csvFileLink,
+            listOfSubFiles : listOfSubFiles
+        });
     });
     
     if(emptyField){

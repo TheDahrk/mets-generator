@@ -2,12 +2,12 @@ export class File{
   /**
    * Represents a mets "file" element
    * @constructor
-   * @param {string} id (required) value of the id attribute
-   * @param {string} link (required) value of the link attribute
-   */
-  constructor(id,link){
-    this.id = id;
-    this.link = link;
+   * @param {string} fileID (required) value of the id attribute
+   * @param {string} fileLink (required) value of the link attribute
+   */ 
+  constructor(options){
+    this.id = options.fileID;
+    this.link = options.fileLink;
   }
 
   /**
@@ -57,11 +57,11 @@ export class FileGroup{
 
     /**
      * Adds a file element to this filegroup element
-     * @param {*} id id of the file
-     * @param {*} link link to the file
+     * @param {string} fileID id of the file
+     * @param {string} fileLink link to the file
      */
-    addFile(id,link){
-      this.files.push(new File(id,link));
+    addFile(options){
+      this.files.push(new File({fileID : options.fileID,fileLink : options.fileLink}));
     }
     
     /**
@@ -72,7 +72,7 @@ export class FileGroup{
     containsFile(fileID){
       let contains = false;
       for (const file of this.files) {
-        if(file.getFileID() === fileID){
+        if(file.getFileID() == fileID){
           contains = true;
           break;
         }
