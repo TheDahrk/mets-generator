@@ -11,36 +11,54 @@
         <div class="left">
             <h3>METS-Generator-v1</h3>
             <div class="form ">
-                <div title="creators" class="section wrapper-tag">
+                
+                
+                <div title="Author(s) of the METS-File" class="section wrapper-tag">
                     <span class="tag-group-label">Author(s):</span>
                     <div class="tag-group">
                         <div title="agent" class="tag">
-                            <input class="half-width input-field tag-value" type="text" placeholder="[Name]" title="name" value="" />
-                            <select class="half-width input-field tag-attribute"  title="role">
+                            <input class="half-width input-field tag-value input-author-name needed" type="text" placeholder="[Name]" title="name" value="" />
+                            <select class="half-width input-field tag-attribute select-author-role needed"  title="role">
                                 <option value="" disabled selected hidden>Role</option>
                             </select>
                         </div><button type="button" class="add single-tag">+</button>
                     </div>
-                    <span class="divider">&nbsp;</span>
                 </div>
-                <div title="creators" class="section wrapper-tag">
+
+                <span class="divider">&nbsp;</span>
+                <!--  -->
+                <div title="Columns which should displayed in the previewer" class="section wrapper-tag">
+                    <span class="tag-group-label">Prefered Columns:</span>
+                    <div class="tag-group">
+                        <div title="column" class="tag">
+                            <input class="half-width input-field tag-value input-column" type="text" placeholder="[Column]" title="column" value="" />
+                        </div>
+                        <button type="button" class="add single-tag">+</button>
+                        <br>
+                    </div>
+                </div>
+
+                <span class="divider">&nbsp;</span>
+                <!--  -->
+
+                <div title="CSV-File section" class="section wrapper-tag">
                     
                     <div class="tag-group">
                         <div title = "csvfile-wrapper" class="tag">
                             <span class="tag-group-label">CSV File(s):</span>
                             <div title="csvfile" class="tag">
-                                <input class="half-width input-field tag-value" type="text" placeholder="[File Name]" title="fileID" value="" />
-                                <input class="half-width input-field tag-value" type="text" placeholder="[Link]" title="fileLink" value="" />
-                                <select class="half-width input-field tag-attribute"  title="viewer">
+                                <input class="half-width input-field tag-value input-csv-fileid needed" type="text" placeholder="[File Name]" title="fileID" value="" />
+                                <input class="half-width input-field tag-value input-csv-filelink needed" type="text" placeholder="[Link]" title="fileLink" value="" />
+                                <select class="half-width input-field tag-attribute select-csv-viewer needed"  title="viewer">
                                     <option value="" disabled selected hidden>Viewer</option>
                                 </select>
                                 <br>
                             </div>
                             <span class="tag-group-label">Content of CSV File:</span>
                             <div title="subfiles" class="tag">
-                                <input class="half-width input-field tag-value" type="text" placeholder="[File Name]" title="fileID" value="" />
-                                <input class="half-width input-field tag-value" type="text" placeholder="[Link]" title="fileLink" value="" />
-                                <select class="half-width input-field tag-attribute"  title="fileType">
+                                <input class="half-width input-field tag-value input-field-sub-fileid needed" type="text" placeholder="[File Name]" title="fileID" value="" />
+                                <input class="half-width input-field tag-value input-field-sub-filelink needed" type="text" placeholder="[Link]" title="fileLink" value="" />
+                                <select class="half-width input-field tag-attribute select-sub-filetype needed"  title="fileType">
                                     <option value="" disabled selected hidden>Filetype</option>
                                 </select>
                                 <button type="button" class="add single-tag">+</button>   

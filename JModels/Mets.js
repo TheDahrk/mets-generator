@@ -175,8 +175,7 @@ export class Mets{
         output += this.structMap.convertToJson()+ "}";
 
         let json = JSON.parse(output)
-        console.log(output);
-        console.log(json)
+        
         let xmlString = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?> \n\n "+
                         "<mets xmlns=\"http://www.loc.gov/METS/\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xsi:schemaLocation=\"http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://purl.org/dc/elements/1.1/ http://dublincore.org/schemas/xmls/simpledc20021212.xsd\">"+
                             json2xml(json)+

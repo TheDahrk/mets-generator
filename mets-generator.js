@@ -126,7 +126,7 @@ function run(){
     mets.addDivToDiv({divIDToAdd : "root",divID : "heurist"});
 
     //generator needs to add possible fileTypes as a Filegroup
-    mets.addFileGroup("preview");
+    mets.addFileGroup("prefered-columns");
     mets.addFileGroup("csv");
     mets.addFileGroup("epidoc");
     mets.addFileGroup("tei");
@@ -136,8 +136,9 @@ function run(){
     //Values from user input
     //Agent section
     $("div[title~=agent]").each(function() {
-        var name = $(this).children("input[title~=name]").val();
-        var role = $(this).children("select[title~=role]").val();
+        var name = $(this).children("input.input-author-name").val();
+        var role = $(this).children("select.select-author-role").val();
+        console.log(name + ", " + role);
         if(name === null || role === null ) emptyField = true;
         mets.addAgent({
             role : role,
@@ -145,16 +146,28 @@ function run(){
         }); 
     });
 
+    //Adding prefered columns as files to filegroup "prefered-columns"
+    $("div[title~=column]").each(function() {
+        var column = $(this).children("input.input-column").val();
+        if(column.length > 0){
+            mets.addFileToFileGroup({
+                fileID: column,
+                fileLink: column,
+                fileGroupID: "prefered-columns"
+            });
+        }
+    });
+
     //Adding CSV Files and Sub Files
     $("div[title~=csvfile-wrapper]").each(function() {
-        var csvFileID = $(this).children("div[title~=csvfile]").children("input[title~=fileID]").val();
-        var csvFileLink = $(this).children("div[title~=csvfile]").children("input[title~=fileLink]").val();
-        var viewer = $(this).children("div[title~=csvfile]").children("select[title~=viewer]").val();
+        var csvFileID = $(this).children("div[title~=csvfile]").children("input.input-csv-fileid").val();
+        var csvFileLink = $(this).children("div[title~=csvfile]").children("input.input-csv-filelink").val();
+        var viewer = $(this).children("div[title~=csvfile]").children("select.select-csv-viewer").val();
         var listOfSubFiles = new Array;
         $(this).children("div[title~=subfiles]").each(function() {
-            var subFileID = $(this).children("input[title~=fileID]").val();
-            var subFileLink = $(this).children("input[title~=fileLink]").val();
-            var subFileType = $(this).children("select[title~=fileType]").val();
+            var subFileID = $(this).children("input.input-field-sub-fileid").val();
+            var subFileLink = $(this).children("input.input-field-sub-filelink").val();
+            var subFileType = $(this).children("select.select-sub-filetype").val();
             if(subFileID.length == 0 ||  subFileLink.length == 0 || subFileType === null) emptyField = true;
             listOfSubFiles.push([subFileID,subFileLink,subFileType]);
             
@@ -186,7 +199,7 @@ function run(){
 };
 
 function inputError(){
-    $("input, select").each(function() {
+    $("input.needed, select.needed").each(function() {
         var value = $(this).val();
         if(value === null || value.length == 0){
             $(this).addClass("error-highlight");
